@@ -52,7 +52,7 @@ services:
     env_file: ./.docker_env
     restart: always
     image: web:dermaval_app
-    command: celery -A dermaval worker -Q dermaval -l info -n dermaval@%n
+    command: celery -A dermapj worker -Q dermaval -l info -n dermaval@%n
     container_name: dermaval_app_celery
     extra_hosts:
       - "geo-krishi-tts-tmp.l.wiseyak.com:113.199.192.49"

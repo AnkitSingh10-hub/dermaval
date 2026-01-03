@@ -17,6 +17,7 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 MEDIA_DIR = os.path.join(BASE_DIR, "media")
 LOGS_ROOT = config("LOGS_ROOT", default=os.path.join(BASE_DIR, "log"))
 
+
 # =========================================================
 #  SECURITY & ENV CONFIGURATION
 # =========================================================
@@ -197,8 +198,13 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [STATIC_DIR]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = MEDIA_DIR
+
+
+# Base URL for serving files
+MEDIA_URL = '/media/'
+
+# Where files are physically stored on your computer
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = "users.User"
 
 
