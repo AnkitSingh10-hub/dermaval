@@ -1,3 +1,4 @@
+
 ## dermaval
 ![img](app/static/img/Geo-Krishi-logo.png)
 Nepal has an immense diversity in terms of geographic, topographic and climatic conditions. However, intervention to increase crop productivity with pest/diseases control, randomly promote cash crop and over utilization of fertilizer are not sufficient in the context of changing climate, population growth and degradation of resources. More specifically and importantly, information such as bio-physical, climatic and agro economic information are useful but contextualize them to get the relevant information is harder to find.
