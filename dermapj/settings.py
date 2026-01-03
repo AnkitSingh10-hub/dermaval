@@ -5,6 +5,7 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config
 from corsheaders.defaults import default_headers
+# AUTH_USER_MODEL = 'users.User'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # We keep os.path wrapper for compatibility with your old logic
@@ -68,10 +69,9 @@ THIRD_PARTY_APPS = [
 
 # Apps specific to dermapj
 CUSTOM_APPS = [
-    # 'api_logger',     # Copy these apps from your old project
-    # 'auth_app',       # to your new project folder
-    # 'notification_app',
-    # 'general_app',
+    "core",
+    "derma",
+    "users",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
