@@ -1,223 +1,132 @@
-
-## dermaval
-![img](app/static/img/Geo-Krishi-logo.png)
-Nepal has an immense diversity in terms of geographic, topographic and climatic conditions. However, intervention to increase crop productivity with pest/diseases control, randomly promote cash crop and over utilization of fertilizer are not sufficient in the context of changing climate, population growth and degradation of resources. More specifically and importantly, information such as bio-physical, climatic and agro economic information are useful but contextualize them to get the relevant information is harder to find.
-
-dermaval provides an intelligent digital agriculture platform built to solve challenges faced by commercial and smallholder farmers. dermaval applies a data-driven system approach to translate knowledge into actionable, timely and context-specific advisories, covering all stages of the crop value chain.
-
-## Mission
-Our mission is to simplify and amplify the work of farmer/intermediator by adopting scientific methodology to provide location specific-timely actionable information to increase farm productivity and maximize profitability.
-
-## Objective
-1. Establish agricultural data infrastructure incorporating several data, products and tools useful for overall agricultural stages.
-2. Remove technical and cultural barrier in the most simple and cost-effective way such that anyone can monitor real-time information from the farm.
-3. Empower extension worker to provide better recommendation to the farmer through our district level agriculture advisory services center.
-
-## Project Setup
-1. Create virtual using pipenv and sync dependencies.
-   If you do not have pipenv, you can use virtualenv to create environment as well.
-   (pipenv preferred). Please scroll down the page to know installation for pipenv.
-   First upgrade setuptools and pip,
-   ```
-   pipenv shell
-   pip install --upgrade pip
-   pip install --upgrade setuptools 
-   ```
-   If any issue regarding pip arises. 
-   Remove the existing virtual environment and create a new virtual environment. 
-   Activate the virtual environment and then follow the steps below.
-   ```
-   # To remove pipenv created virutal env.
-   pipenv --rm
-   
-   # Install specific verion of python using pipenv.
-   pipenv --python <PYTHON-VERSION>
-   
-   # Activate pipenv environment.
-   pipenv shell
-   
-   # After activating virtual env follow below steps.
-   curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-   python get-pip.py --force-reinstall
-   rm get-pip.py
-   pip install --upgrade pip
-   pip install --upgrade setuptools
-   ```
-   For production,
-   ```
-   pipenv sync
-   ```
-   For development,
-   ```
-   pipenv sync --dev
-   ```
-   
-2. Add .env file in the root folder.
-   ```
-   DEBUG= False
-   SECRET_KEY= YOUR_SECRET_KEY
-   ALLOWED_HOSTS = YOUR_ALLOWED_HOSTS
-   ADMINS = Admin, admin@email.com
-   MANAGERS = Admin, admin@email.com
-   
-   # Environment - development or production
-   ENVIRONMENT = development
-   
-   # Database
-   DEFAULT_DATABASE = DEFAULT_DATABASE_NAME
-   DEFAULT_DATABASE_USER = DEFAULT_DATABASE_USER
-   DEFAULT_DATABASE_PASSWORD = DEFAULT_DATABASE_PASSWORD
-   DEFAULT_DATABASE_HOST = DEFAULT_DATABASE_HOST
-   DEFAULT_DATABASE_PORT = DEFAULT_DATABASE_PORT
-   DEFAULT_OPTIONS = DEFAULT_OPTIONS
-   
-   # ODK Database
-   ODK_DATABASE = ODK_DATABASE
-   ODK_DATABASE_USER = ODK_DATABASE_USER
-   ODK_DATABASE_PASSWORD = ODK_DATABASE_PASSWORD
-   ODK_DATABASE_HOST = ODK_DATABASE_HOST
-   ODK_DATABASE_PORT = ODK_DATABASE_PORT
-   ODK_OPTIONS = ODK_OPTIONS
-
-   # EMAIL SETTINGS
-   DEFAULT_FROM_EMAIL= dermaval <no-reply>
-   EMAIL_USE_TLS= True
-   EMAIL_HOST= smtp.gmail.com
-   EMAIL_HOST_USER= EMAIL_HOST_USER
-   EMAIL_HOST_PASSWORD= EMAIL_HOST_PASSWORD
-   EMAIL_PORT=587
-   
-   PROTOCOL = http or https
-   DOMAIN = www.dermaval.farm
-   
-   TASK_DEFAULT_QUEUE = dermaval
-   
-   ADBL_TEST_SERVER = False
-   ADBL_USERNAME = ADBL_USERNAME # Provided by ADBL team.
-   ADBL_PASSWORD = ADBL_PASSWORD # Provided by ADBL team.
-   
-   ADBL_SECRET_KEY_TEST = ADBL_SECRET_KEY_TEST # Provided by ADBL team.
-   ADBL_SECRET_KEY = ADBL_SECRET_KEY # Provided by ADBL team.
-   
-   ADBL_FIREBASE_KEY = ADBL_FIREBASE_KEY # Provided by dermaval team.
-
-   FCM_SERVER_KEY = FCM_SERVER_KEY
-   GOOGLE_MAP_API_KEY = GOOGLE_MAP_API_KEY
-   OPEN_WEATHER_MAP_APP_ID = OPEN_WEATHER_MAP_APP_ID
-   
-   SEND_ADD_FARM_NOTIFICATION = True
-   SEND_ADD_CROP_NOTIFICATION = True
-   ```
-   Generate SECRET_KEY using python shell and replace YOUR_SECRET_KEY.
-   ```
-   from django.core.management.utils import get_random_secret_key
-   get_random_secret_key()
-   ```
-   
-3. Restore database.
-   Restore database from latest backup.
-
-4. To run server
-   ```
-   python manage.py runserver
-   ```
-
-## Internationalization and Localization
-
-To localize the text, first message must be made then compiled.
-
-```
-python manage.py makemessages
-python manage.py compilemessages
-```
-
-## Testing
-
-Djanto test with no migrations is used for testing. For more info, visit https://pypi.org/project/django-test-without-migrations/. It simply creates all models without running migrations.
-
-Also, custom runner has been created in order to handle models with managed false.
-To run test
-
-```
-python manage.py test --nomigrations
-python manage.py test app --nomigrations # Testing particular app
-```
-## Other Setup
-
-##### Maintenance Mode
-In maintenance mode, all the web pages and apis will be restricted. No operation can be done. 
-
-To enable maintenance mode, set MAINTENANCE_MODE = True in settings.py
-
-##### Pipenv Install
-To install pipenv
-```
-sudo apt install pipenv
-pip install pipenv
-```
-If your system's python version doesn't match the required python version, then install pyenv.
-To install pyenv, please follow the steps provided in https://github.com/pyenv/pyenv or https://realpython.com/intro-to-pyenv/.
-If any issue arises, please find solutions in https://github.com/pyenv/pyenv/wiki/Common-build-problems or any other sites.
-
-##### Auto Generate Doc with Sphinx
-
-View this link http://www.columbia.edu/~alan/django-jsonapi-training/sphinx.html, https://www.freecodecamp.org/news/sphinx-for-django-documentation-2454e924b3bc/, https://samnicholls.net/2016/06/15/how-to-sphinx-readthedocs/ to know more about django sphinx doc.
-To generate auto doc with sphinx, follow the following steps:
-```
-# Go to root of the project and create a folder named docs
-mkdir docs
-cd docs
-# To activate environment
-pipenv shell
-sphinx-quickstart
-# > Separate source and build directories (y/n) [n]: y
-# > Project name: dermaval
-# > Author name(s): Pathway Technologies
-```
-
-Open conf.py file in docs and paste the following below the #import os line.
-```
-import os
-import sys
-import django
-sys.path.insert(0, os.path.abspath('../../'))
-os.environ['DJANGO_SETTINGS_MODULE'] = 'Your_project_name.settings'
-django.setup()
-```
-
-In conf.py, to autodoc add the following
-```
-extensions = [
-   ...
-   'sphinx.ext.autodoc'
-]
-```
-
-```
-sphinx-apidoc -o source/app .. --force
-make html
-make linkcheck
-
-# To rebuild doc
-make clean
-make html
-```
-
-###### Optional
-
-To view doc in read the doc theme.
-For more info visit https://sphinx-rtd-theme.readthedocs.io/en/stable/.
-
-```
-pipenv install sphinx-rtd-theme
-
-# Open conf.py file in docs and find extensions add the following
-import sphinx_rtd_theme
-
-extensions = [
-    ...
-    "sphinx_rtd_theme",
-]
-
-html_theme = "sphinx_rtd_theme"
-```
+DermaEval: Human-AI Collaborative Training Platform
+![alt text](https://img.shields.io/badge/Status-Prototype-green)
+![alt text](https://img.shields.io/badge/Tech-Django%20|%20Vue%20|%20Docker-blue)
+![alt text](https://img.shields.io/badge/Research-Human--Centered%20AI-orange)
+DermaEval is an interactive educational platform designed to bridge the gap between theoretical dermatology study and clinical application. Acting as a "flight simulator" for medical trainees, the system utilizes Computer Vision (YOLOv8) not to replace the human diagnostician, but to act as an automated supervisor—providing real-time, quantitative feedback on a student's ability to identify and localize skin pathologies.
+🎯 Research Motivation
+Keywords: Human-in-the-loop Learning, Automated Skill Assessment, Computer Vision in Healthcare.
+Traditional medical training relies heavily on "over-the-shoulder" mentorship, which is resource-intensive and subjective. This project explores Human-Centered AI by inverting the typical diagnostic workflow. Instead of the AI providing the diagnosis, the human provides the diagnosis, and the AI validates the spatial accuracy of that input.
+Key Research Objectives:
+Quantify Diagnostic Accuracy: Using Intersection over Union (IoU) metrics to mathematically grade a trainee's bounding box annotations against Ground Truth AI.
+Longitudinal Skill Tracking: Visualizing the "Learning Curve" to identify if a user is improving over time or struggling with specific pathologies (e.g., confusing cysts with nodules).
+Scalable Feedback: Enabling asynchronous, mass-training sessions without the need for immediate senior faculty supervision.
+🏗 System Architecture
+The application is containerized via Docker, ensuring reproducibility across environments. The stack is architected to handle heavy image processing tasks asynchronously without blocking the user interface.
+Component	Role	Technology Stack
+The "Eyes"	Computer Vision & Inference	Roboflow, PyTorch (YOLOv8), OpenCV
+The "Face"	Interactive Frontend	Vue.js 3, Vue-Konva (Canvas), Tailwind CSS
+The "Brain"	Backend API & Logic	Django REST Framework (DRF), NumPy
+The "Muscle"	Async Task Queue	Celery, Redis
+The "Home"	Infrastructure	Docker Compose, PostgreSQL
+🔄 User Workflow & Methodology
+1. The Interactive Assessment (Student Mode)
+The user is presented with a raw dermatological image from the dataset. Using the Vue-Konva powered canvas interface, the user acts as the doctor, drawing bounding boxes around perceived anomalies (e.g., Acne, Rosacea, Melanoma).
+2. The Asynchronous Validation Pipeline
+Upon submission, the frontend dispatches the coordinate data to the Django backend.
+The request is offloaded to a Celery worker to prevent server timeout.
+The system retrieves the Ground Truth predictions from the Roboflow/YOLOv8 inference engine.
+The Grading Algorithm: The system calculates the Intersection over Union (IoU) between the User's box (
+B
+u
+B 
+u
+​
+ 
+) and the AI's box (
+B
+g
+t
+B 
+gt
+​
+ 
+).
+I
+o
+U
+=
+Area
+(
+B
+u
+∩
+B
+g
+t
+)
+Area
+(
+B
+u
+∪
+B
+g
+t
+)
+IoU= 
+Area(B 
+u
+​
+ ∪B 
+gt
+​
+ )
+Area(B 
+u
+​
+ ∩B 
+gt
+​
+ )
+​
+ 
+Threshold Logic: If 
+I
+o
+U
+>
+0.5
+IoU>0.5
+ and the Class Label matches, it is a True Positive. Otherwise, it is flagged as a False Positive or False Negative.
+3. The Feedback Loop
+The user receives immediate visual feedback. The "Teacher's" (AI) boxes are overlaid on the "Student's" boxes using color-coded indicators (Green = Correct, Red = Missed).
+Chart.js visualizations update the user's profile, tracking accuracy percentages across different skin conditions over time.
+🚀 Installation & Setup
+This project utilizes uv for fast Python package management and Docker for orchestration.
+Prerequisites
+Docker & Docker Compose
+Git
+Quick Start
+Clone the repository
+code
+Bash
+git clone https://github.com/yourusername/dermaeval.git
+cd dermaeval
+Configure Environment
+Create a .env file in the root directory (template provided in .env.example) and add your Roboflow API Key.
+Build and Run
+code
+Bash
+docker compose up --build
+Access the Application
+Frontend: http://localhost:8080
+API Documentation: http://localhost:8000/api/schema/swagger-ui/
+📂 Project Structure
+code
+Text
+dermaeval/
+├── app/                  # Django Backend
+│   ├── api/              # DRF Serializers & ViewSets
+│   ├── core/             # IoU Logic & Scoring Algorithms
+│   └── tasks.py          # Celery Async Definitions
+├── frontend/             # Vue.js Application
+│   ├── src/components/   # Konva Canvas & Chart.js Components
+│   └── src/views/        # Student Dashboard
+├── docker-compose.yml    # Service Orchestration
+├── Dockerfile            # Multi-stage Python build with uv
+└── pyproject.toml        # Dependency management
+🔮 Future Work
+Heatmap Analysis: Aggregating data from multiple students to identify "confusing" lesions that trick the majority of trainees.
+Adaptive Difficulty: Using Reinforcement Learning to serve harder images as the student's accuracy score improves.
+👨‍💻 Author
+Ankit Singh
