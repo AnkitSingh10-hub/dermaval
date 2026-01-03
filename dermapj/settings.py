@@ -199,6 +199,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = MEDIA_DIR
+AUTH_USER_MODEL = "users.User"
+
 
 # =========================================================
 #  REST FRAMEWORK

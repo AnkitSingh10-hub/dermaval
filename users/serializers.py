@@ -1,7 +1,7 @@
 import html
 from decimal import ROUND_HALF_EVEN, Decimal
 from django.conf import settings
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.db import transaction
 from django.db.models import (
     DecimalField,
