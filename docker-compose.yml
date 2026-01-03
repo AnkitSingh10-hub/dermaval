@@ -1,0 +1,115 @@
+services:
+  db:
+    restart: always
+    environment:
+      - POSTGRES_DB=${CONTAINER_DATABASE_NAME}
+      - POSTGRES_USER=${CONTAINER_DATABASE_USER}
+      - POSTGRES_PASSWORD=${CONTAINER_DATABASE_PASSWORD}
+    env_file:
+      - ./.docker_env
+    image: postgis/postgis:13-3.1-alpine
+    container_name: dermaval_app_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data/:rw
+    ports:
+      - "${DOCKER_DB_PORT:-5434}:5432"
+    networks:
+      - dermaval_app_network
+  redis:
+    restart: always
+    image: redis:6.2.6-alpine
+    container_name: dermaval_app_redis
+    networks:
+      - dermaval_app_network
+  web:
+    restart: always
+    env_file:
+      - ./.docker_env
+    build:
+      context: .
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    command: bash -c 'uv sync --dev && uv run manage.py runserver 0.0.0.0:8000'
+    # command: 'gunicorn --error-logfile - --access-logfile - --workers 3 --bind 0.0.0.0:8000 dermaval.wsgi:application --timeout 300 --reload'
+    volumes:
+      - uv_env:/app/.venv
+      - ./:/app/
+    image: web:dermaval_app
+    container_name: dermaval_app_container
+    ports:
+      - ${DOCKER_WEB_PORT:-8000}:8000
+    extra_hosts:
+      # This enables the container to access local machine's ports using host.docker.internal as domain
+      - "host.docker.internal:host-gateway"
+      - "geo-krishi-tts-tmp.l.wiseyak.com:113.199.192.49"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - dermaval_app_network
+  celery:
+    env_file: ./.docker_env
+    restart: always
+    image: web:dermaval_app
+    command: celery -A dermaval worker -Q dermaval -l info -n dermaval@%n
+    container_name: dermaval_app_celery
+    extra_hosts:
+      - "geo-krishi-tts-tmp.l.wiseyak.com:113.199.192.49"
+    depends_on:
+      - web
+      - db
+      - redis
+    volumes:
+      - uv_env:/app/.venv
+      - ./:/app/
+    networks:
+      - dermaval_app_network
+  celery_beat:
+    env_file: ./.docker_env
+    restart: always
+    image: web:dermaval_app
+    command: celery -A dermaval beat  --pidfile= -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    container_name: dermaval_app_celery_beat
+    depends_on:
+      - web
+      - db
+      - redis
+    volumes:
+      - uv_env:/app/.venv
+      - ./:/app/
+    networks:
+      - dermaval_app_network
+  ws:
+    env_file: ./.docker_env
+    restart: always
+    image: web:dermaval_app
+    command: gunicorn -k uvicorn.workers.UvicornWorker --workers 1 --bind 0.0.0.0:8001 dermaval.asgi:application
+    container_name: dermaval_app_ws
+    depends_on:
+      - redis
+    ports:
+      - ${DOCKER_WS_PORT:-8001}:8001
+    volumes:
+      - uv_env:/app/.venv
+      - ./:/app/
+    networks:
+      - dermaval_app_network
+  # nginx:
+  #   image: nginx:dermaval
+  #   build: ./nginx
+  #   volumes:
+  #     - ./static:/static
+  #     - ./media:/media
+  #     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - web
+
+volumes:
+  pgdata:
+  uv_env:
+
+networks:
+  dermaval_app_network:
