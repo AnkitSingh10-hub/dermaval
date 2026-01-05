@@ -170,3 +170,6 @@ gcloud_credential.json
 /credentials/
 /fixtures/
 /geo_ip_database
+
+
+chrome_200_percent.pak
