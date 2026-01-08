@@ -11,8 +11,8 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # 1. SETUP ROBOFLOW
         # (You get these from your Roboflow Dashboard)
-        rf = Roboflow(api_key="YOUR_ROBOFLOW_API_KEY")
-        project = rf.workspace().project("your-project-name")
+        rf = Roboflow(api_key="vfNK8WTwjjyHQtJ7MzsG")
+        project = rf.workspace().project("DermaVal")
         model = project.version(1).model
 
         # 2. DEFINE IMAGE SOURCE

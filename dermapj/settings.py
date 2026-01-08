@@ -64,7 +64,9 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "django_filters",
     "django_prometheus",
-    "versatileimagefield"
+    "versatileimagefield",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     # "fcm_django",
     # "django_celery_beat",
 ]
