@@ -64,6 +64,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "django_filters",
     "django_prometheus",
+    "versatileimagefield"
     # "fcm_django",
     # "django_celery_beat",
 ]

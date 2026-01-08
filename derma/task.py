@@ -1,36 +1,39 @@
-from dermapj.celery import task
+from dermapj.celery import shared_task
 from .models import UserAttempt, AssessmentImage
-from derma.utils import calculate_iou
+from .utils import grade_submission # Import the advanced logic we just wrote
 import json
 
-@task
+@shared_task
 def grade_student_attempt(attempt_id):
-    attempt = UserAttempt.objects.get(id=attempt_id)
+    """
+    Async Task: 
+    1. Fetches the attempt
+    2. Runs the Greedy Matching Algorithm (Precision/Recall)
+    3. Saves detailed metrics for the Learning Curve analysis
+    """
+    try:
+        attempt = UserAttempt.objects.get(id=attempt_id)
+    except UserAttempt.DoesNotExist:
+        return f"Attempt {attempt_id} not found."
+
+    # Get the raw JSON lists
+    # Ensure they are Python lists/dicts, not strings
     ground_truth = attempt.assessment_image.ground_truth_labels
     student_boxes = attempt.user_boxes
     
-    
-    total_iou = 0
-    matches = 0
-    
-    
-    for s_box in student_boxes:
-        s_vec = [s_box['x'], s_box['y'], s_box['width'], s_box['height']]
-        best_match_score = 0
-        
-        for gt_box in ground_truth:
-            gt_vec = [gt_box['x'], gt_box['y'], gt_box['width'], gt_box['height']]
-            score = calculate_iou(s_vec, gt_vec)
-            if score > best_match_score:
-                best_match_score = score
-        
-        if best_match_score > 0.5: 
-            total_iou += best_match_score
-            matches += 1
+    # --- THE PHD UPGRADE ---
+    # Instead of a manual loop here, we call the advanced math function
+    # that handles 'False Positives' and 'Precision/Recall'
+    results = grade_submission(ground_truth, student_boxes)
 
-    final_score = (total_iou / len(ground_truth)) * 100 if ground_truth else 0
+    # Save the Research Metrics
+    attempt.iou_score = results['iou_score'] # The F1 Score (0.0 to 1.0)
     
-    attempt.iou_score = final_score
+    # Save the granular data: {"false_positives": 2, "precision": 0.6, ...}
+    attempt.detailed_report = results['detailed_report']
+    
+    attempt.is_graded = True
     attempt.save()
-    
-    return f"Grading Complete. Score: {final_score}"
+
+    # Log for debugging
+    return f"Graded Attempt {attempt_id}: Score {attempt.iou_score}, Missed: {results['detailed_report']['missed_lesions']}"
